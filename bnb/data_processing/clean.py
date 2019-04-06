@@ -16,7 +16,7 @@ def bathrooms_int(dtafrm):
     
     ''' accepts a dataframe, cleans the "Bathrooms_num" string and converts it to numeric  '''
     
-    for num_bathrooms, j in enumerate(dtafrm['Bathrooms_num']):
+    for j,num_bathrooms in enumerate(dtafrm['Bathrooms_num']):
         if(str(num_bathrooms)=='nan'):
             dtafrm['Bathrooms_num_int'][j]= -1
         elif('Half' in str(num_bathrooms) or 'half' in str(num_bathrooms)):
@@ -31,7 +31,7 @@ def beds_int(dtafrm):
     
     '''accepts a dataframe, cleans the "Beds_no" string and converts it to numeric  ''' 
     
-    for beds_num, j in zip(dtafrm['Beds_no'],range(len(dtafrm))):
+    for j,beds_num in enumerate(dtafrm['Beds_no']):
         if(str(beds_num)=='nan'):
             dtafrm['Beds_int'][j]= -1
         elif('BREAKFAST' in str(beds_num) or 'breakfast' in str(beds_num)):
@@ -47,7 +47,7 @@ def bedrooms_int(dtafrm):
     
     '''accepts a dataframe, cleans the string of the "Bedrooms_int" value, returns a clean string '''
     
-    for bedrooms_num,j in zip(dtafrm.Bedrooms_no,range(len(dtafrm))):
+    for j, bedrooms_num in enumerate(dtafrm.Bedrooms_no):
         if(str(bedrooms_num)== 'nan'):
             dtafrm['Bedrooms_int'][j]= -1
         else:
@@ -60,7 +60,7 @@ def bedrooms_int_final(dtafrm):
     ''' accepts a dataframe, converts "Bedrooms_int" to numeric value '''
     
     for n_bedrooms in dtafrm.Bedrooms_int:
-        if(n_bedrooms == None):
+        if(str(n_bedrooms) == 'nan'):
             n_bedrooms= 0
         else:
             n_bedrooms=int(n_bedrooms)
@@ -84,6 +84,10 @@ def super_host(dtafrm):
     dtafrm['Super_host']=[isinstance(x, str) for x in dtafrm.Super_host]
     return(dtafrm['Super_host'].map({False:0,True:1}))
 
+def reviews_num(dtafrm):
+    
+    ''' accepts a dataframe, exract the number of strings from the review string, returns a new variable of int datatype'''
+    return([-1 if (str(i)=='nan' or i.split(' ')[0]=='No') else int(i.split(' ')[0])  for i in dtafrm['Review']])
 
 
 def num_of_stars(dtafrm):
@@ -91,7 +95,7 @@ def num_of_stars(dtafrm):
     ''' accepts a dataframe, loops through a list of reviews varibles, and returns a clean version of the number of stars '''
     
     for catog in ['Accuracy_stars','CheckIn_stars','Cleanliness_stars','Communication_stars','Location_stars','Value_stars']:
-        for stars_num, j in zip(dtafrm[catog],range(len(dtafrm))):
+        for j,stars_num in enumerate(dtafrm[catog]):
             if(str(stars_num)=='nan'):
                 dtafrm[catog][j]= '0'
             else:
@@ -108,7 +112,7 @@ def entire_shared_private_room(dtafrm):
     
     """
     
-    for room_type,j in zip(dtafrm['EntireHomeVsRoom'],range(len(dtafrm))):
+    for j,room_type in enumerate(dtafrm['EntireHomeVsRoom']):
         if(str(room_type)== 'nan'):
             dtafrm['shared_room'][j]= -1  
         elif(('ENTIRE' in room_type) or ('Entire' in room_type) or ('Tiny house' in room_type) or ('TINY HOUSE' in room_type) or('Earth house' in room_type)):
@@ -129,17 +133,20 @@ def bed_type(dtafrm):
     
     """
     
-    for bed,j in zip(dtafrm.Sleeping_engagment,range(len(dtafrm))):
+    for j, bed in enumerate(dtafrm.Sleeping_engagment):
         if(str(bed)!= 'nan'):
             dtafrm['BedType'][j]= bed.split(' ')[2]
     return(dtafrm['BedType'])
+
+def one_hot_encode_bedtype(dtafrm):
+    return(dtafrm.join(pd.get_dummies(dtafrm.BedType)))
 
         
 def amenities_to_vars(dtafrm):
     
     ''' accepts a dataframe, cleans the amenities string for each sample and returns the clean copy of the variable'''
     
-    for amenity,j in zip(dtafrm.Amenities,range(len(dtafrm))):
+    for j, amenity in enumerate(dtafrm.Amenities):
         dtafrm['Amenities_mod'][j]= amenity.replace("[","").replace("'","").replace("]","").split(", ")
     return(dtafrm['Amenities_mod'])
     
