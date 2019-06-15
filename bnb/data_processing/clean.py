@@ -84,6 +84,10 @@ def super_host(dtafrm):
     dtafrm['Super_host']=[isinstance(x, str) for x in dtafrm.Super_host]
     return(dtafrm['Super_host'].map({False:0,True:1}))
 
+def reviews_num(dtafrm):
+    
+    ''' accepts a dataframe, exract the number of strings from the review string, returns a new variable of int datatype'''
+    return([-1 if (str(i)=='nan' or i.split(' ')[0]=='No') else int(i.split(' ')[0])  for i in dtafrm['Review']])
 
 
 def num_of_stars(dtafrm):
