@@ -1,5 +1,6 @@
 import pandas as pd
 import math
+import datetime
 from sklearn.preprocessing import MultiLabelBinarizer
 
 
@@ -84,6 +85,10 @@ def super_host(dtafrm):
     dtafrm['Super_host']=[isinstance(x, str) for x in dtafrm.Super_host]
     return(dtafrm['Super_host'].map({False:0,True:1}))
 
+def reviews_num(dtafrm):
+    
+    ''' accepts a dataframe, exract the number of strings from the review string, returns a new variable of int datatype'''
+    return([-1 if (str(i)=='nan' or i.split(' ')[0]=='No') else int(i.split(' ')[0])  for i in dtafrm['Review']])
 
 
 def num_of_stars(dtafrm):
@@ -145,6 +150,15 @@ def amenities_to_vars(dtafrm):
     for j, amenity in enumerate(dtafrm.Amenities):
         dtafrm['Amenities_mod'][j]= amenity.replace("[","").replace("'","").replace("]","").split(", ")
     return(dtafrm['Amenities_mod'])
+
+def amenities_to_vars2(dtafrm):
+    
+    ''' accepts a dataframe, cleans the amenities string for each sample and returns the clean copy of the variable'''
+    
+    for j, k in enumerate(dtafrm.Amenities_mod):
+        #dtafrm['Amenities_mod'][j]= amenity.replace("[","").replace("'","").replace("]","").split(", ")
+        dtafrm['Amenities_length'][j]= len(k)
+    return(dtafrm['Amenities_length'])
     
     
 def encode_amenities(dtafrm):
@@ -154,6 +168,15 @@ def encode_amenities(dtafrm):
     mlb = MultiLabelBinarizer()
     df = dtafrm.join(pd.DataFrame(mlb.fit_transform(dtafrm.pop('Amenities_mod')),columns= mlb.classes_, index= dtafrm.index))
     return(df)
+
+def week_of_year(dtafrm):
+    
+    ''' accepts a dataframe, extracts the week of the year according to the check_in date '''
+    
+    dtafrm['Year_week'] = [i.isocalendar()[1] for i in dtafrm['CheckIn']]
+    
+    return(dtafrm['Year_week'])
+ 
 
 
             
